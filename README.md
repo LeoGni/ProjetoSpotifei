@@ -123,5 +123,6 @@ Este projeto foi desenvolvido como prática acadêmica de um sistema completo em
 
 ## 📧 Contato
 
-Desenvolvido por Pedro  
+Desenvolvido por Leonardo Guadagni
+RA: 22.125.081-4
 FEI - Ciência da Computação
