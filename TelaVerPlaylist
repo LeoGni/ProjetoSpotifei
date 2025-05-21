@@ -1,0 +1,139 @@
+package view;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import dao.MusicaDAO;
+import dao.PlaylistMusicaDAO;
+import dao.MusicaCurtidaDAO;
+import dao.HistoricoDAO;
+import model.Musica;
+import java.awt.*;
+import java.util.ArrayList;
+
+public class TelaVerPlaylist extends JFrame {
+
+    private JTable tabelaMusicas;
+    private DefaultTableModel modeloTabela;
+    private JButton btnRemoverMusica;
+    private JButton btnCurtirDescurtir;
+    private int playlistId;
+
+    private final Color fundo = new Color(18, 18, 18);
+    private final Color verde = new Color(30, 215, 96);
+    private final Color branco = Color.WHITE;
+    private final Color cinzaEscuro = new Color(40, 40, 40);
+
+    public TelaVerPlaylist(int playlistId) {
+        this.playlistId = playlistId;
+
+        setTitle("Músicas da Playlist");
+        setSize(500, 350);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setLayout(null);
+        setLocationRelativeTo(null);
+        getContentPane().setBackground(fundo);
+
+        modeloTabela = new DefaultTableModel(new Object[]{"ID", "Nome", "Artista", "Gênero"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        tabelaMusicas = new JTable(modeloTabela);
+        tabelaMusicas.setBackground(fundo);
+        tabelaMusicas.setForeground(branco);
+        tabelaMusicas.setSelectionBackground(verde);
+        tabelaMusicas.setSelectionForeground(branco);
+        tabelaMusicas.setGridColor(cinzaEscuro);
+        tabelaMusicas.setShowGrid(true);
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        centerRenderer.setBackground(fundo);
+        centerRenderer.setForeground(branco);
+        for (int i = 0; i < modeloTabela.getColumnCount(); i++) {
+            tabelaMusicas.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        JScrollPane scroll = new JScrollPane(tabelaMusicas);
+        scroll.setBounds(20, 20, 440, 270);
+        scroll.getViewport().setBackground(fundo);
+        add(scroll);
+
+        btnRemoverMusica = new JButton("Remover Música");
+        btnRemoverMusica.setBounds(180, 300, 150, 25);
+        btnRemoverMusica.setBackground(verde);
+        btnRemoverMusica.setForeground(branco);
+        btnRemoverMusica.setFocusPainted(false);
+        add(btnRemoverMusica);
+
+        btnRemoverMusica.addActionListener(e -> {
+            int linhaSelecionada = tabelaMusicas.getSelectedRow();
+            if (linhaSelecionada < 0) {
+                JOptionPane.showMessageDialog(null, "Selecione uma música na tabela.");
+                return;
+            }
+            int musicaId = Integer.parseInt(modeloTabela.getValueAt(linhaSelecionada, 0).toString());
+            boolean sucesso = PlaylistMusicaDAO.removerMusicaDaPlaylist(playlistId, musicaId);
+            if (sucesso) {
+                JOptionPane.showMessageDialog(null, "Música removida da playlist!");
+                carregarMusicas();
+            } else {
+                JOptionPane.showMessageDialog(null, "Erro ao remover a música.");
+            }
+        });
+
+        btnCurtirDescurtir = new JButton("Curtir");
+        btnCurtirDescurtir.setBounds(20, 300, 150, 25);
+        btnCurtirDescurtir.setBackground(verde);
+        btnCurtirDescurtir.setForeground(branco);
+        btnCurtirDescurtir.setFocusPainted(false);
+        add(btnCurtirDescurtir);
+
+        btnCurtirDescurtir.addActionListener(e -> {
+            int linhaSelecionada = tabelaMusicas.getSelectedRow();
+            if (linhaSelecionada < 0) {
+                JOptionPane.showMessageDialog(null, "Selecione uma música para curtir/descurtir.");
+                return;
+            }
+            int musicaId = Integer.parseInt(modeloTabela.getValueAt(linhaSelecionada, 0).toString());
+
+            String emailUsuario = util.Sessao.emailUsuario;
+
+            boolean curtida = MusicaCurtidaDAO.isMusicaCurtida(emailUsuario, musicaId);
+            boolean sucesso;
+
+            if (curtida) {
+                sucesso = MusicaCurtidaDAO.descurtirMusica(emailUsuario, musicaId);
+                if (sucesso) {
+                    HistoricoDAO.registrarAcao(emailUsuario, "descurtir", Integer.toString(musicaId));
+                    btnCurtirDescurtir.setText("Curtir");
+                }
+            } else {
+                sucesso = MusicaCurtidaDAO.curtirMusica(emailUsuario, musicaId);
+                if (sucesso) {
+                    HistoricoDAO.registrarAcao(emailUsuario, "curtir", Integer.toString(musicaId));
+                    btnCurtirDescurtir.setText("Descurtir");
+                }
+            }
+
+            if (!sucesso) {
+                JOptionPane.showMessageDialog(null, "Erro ao atualizar curtida.");
+            }
+        });
+
+        carregarMusicas();
+    }
+
+    private void carregarMusicas() {
+        ArrayList<Musica> musicas = MusicaDAO.buscarMusicasDaPlaylist(playlistId);
+        modeloTabela.setRowCount(0);
+        if (musicas != null) {
+            for (Musica m : musicas) {
+                modeloTabela.addRow(new Object[]{m.getId(), m.getNome(), m.getArtista(), m.getGenero()});
+            }
+        }
+    }
+}
