@@ -91,7 +91,7 @@ Este projeto serve como base para futuras evoluções e aprimoramentos, podendo 
 
 ## Contato
 
-Para dúvidas ou sugestões, entre em contato pelo email: seu-email@exemplo.com
+Para dúvidas ou sugestões, entre em contato pelo email: leonardoguadagni2005@gmail.com
 
 ---
 
