@@ -1,128 +1,98 @@
-# 🎵 Spotifei - Plataforma de Músicas com Java Swing + PostgreSQL
+# Spotifei
 
-Sistema de gerenciamento de músicas com interface gráfica feita em Java Swing, conexão com banco de dados PostgreSQL via JDBC e arquitetura organizada em MVC.
+## 1. Introdução
 
----
+O Spotifei é uma aplicação desktop desenvolvida em Java utilizando Swing para a interface gráfica e PostgreSQL como sistema gerenciador de banco de dados. O projeto tem como objetivo oferecer uma plataforma simples para cadastro, busca, gerenciamento e reprodução de músicas, com funcionalidades de playlists, curtidas e histórico de ações dos usuários, inspirado no estilo visual do Spotify.
 
-## 📋 Funcionalidades
-
-- ✅ Cadastro e login de usuários
-- 🔍 Busca de músicas por nome
-- 🎶 Cadastro de músicas
-- 💾 Criação de playlists por usuário
-- 📚 Histórico de ações (buscas, curtidas, etc.)
-- 📊 Interface gráfica 100% feita em JFrame
-- 🧱 Backend com DAO e JDBC para PostgreSQL
+Este documento descreve as principais funcionalidades, arquitetura, design e instruções para execução do sistema.
 
 ---
 
-## 📁 Estrutura do Projeto
+## 2. Funcionalidades Implementadas
 
-```
-Spotifei/
-├── util/
-├── dao/
-├── model/
-├── view/
-└── Main.java
-```
+### Cadastro e Login
+- Tela de cadastro para novos usuários, com validação básica e persistência no banco.
+- Tela de login que autentica usuários e mantém a sessão ativa para uso das demais funcionalidades.
 
----
+### Busca e Gerenciamento de Músicas
+- Interface para buscar músicas por nome, exibindo detalhes como nome, artista e gênero.
+- Permite curtir e descurtir músicas, com registro dessas ações no histórico do usuário.
+- Função para adicionar músicas a playlists existentes.
 
-## 🛠 Tecnologias Utilizadas
+### Playlists
+- Criação, visualização e gerenciamento de playlists próprias do usuário.
+- Adição e remoção de músicas dentro das playlists.
+- Visualização das músicas contidas em cada playlist, com as opções de curtir ou descurtir diretamente nesta tela.
 
-- **Java 8+**
-- **Swing (JFrame)**
-- **PostgreSQL**
-- **JDBC Driver PostgreSQL**
-- **NetBeans IDE (recomendado)**
-
----
-
-## 🧰 Requisitos
-
-- Java JDK 8 ou superior
-- PostgreSQL instalado
-- NetBeans (ou outra IDE)
-- JDBC Driver do PostgreSQL  
-  🔗 [Baixar JDBC driver](https://jdbc.postgresql.org/download/postgresql-42.7.3.jar)
+### Histórico
+- Registro e exibição das ações realizadas pelo usuário, incluindo buscas, curtidas e descurtidas.
+- Visualização detalhada do histórico com separação por tipo de ação.
 
 ---
 
-## 🧑‍💻 Como Rodar o Projeto
+## 3. Arquitetura e Tecnologias Utilizadas
 
-### 1. Clone ou extraia o projeto
-
-```bash
-# Se estiver no GitHub:
-git clone https://github.com/seu-usuario/spotifei.git
-
-# Ou extraia o .zip que recebeu
-```
-
-### 2. Configure o banco de dados
-
-- Abra o **pgAdmin** ou outro cliente PostgreSQL
-- Crie um banco de dados chamado:
-
-```
-spotifei
-```
-
-- Execute o script SQL:  
-  👉 [`spotifei_postgresql.sql`](spotifei_postgresql.sql)
-
-```sql
--- Exemplo:
-CREATE DATABASE spotifei;
-\c spotifei
--- Execute o conteúdo do arquivo .sql
-```
-
-### 3. Verifique as credenciais do banco
-
-No arquivo `dao/Conexao.java`, atualize se necessário:
-
-```java
-private static final String URL = "jdbc:postgresql://localhost:5432/spotifei";
-private static final String USUARIO = "postgres";
-private static final String SENHA = "123"; // sua senha
-```
-
-### 4. Adicione o driver JDBC ao projeto
-
-- Clique com o botão direito no projeto > **Properties**
-- Vá em **Libraries** > **Add JAR/Folder**
-- Selecione o `postgresql-42.7.3.jar`
+- **Linguagem:** Java 17 (recomendado).
+- **Interface:** Java Swing, com componentes personalizados para melhor experiência visual.
+- **Banco de Dados:** PostgreSQL, com tabelas normalizadas para usuários, músicas, playlists, curtidas e histórico.
+- **DAO (Data Access Object):** Padrão DAO implementado para abstrair acesso e manipulação dos dados no banco.
+- **Controle de Sessão:** Classe utilitária para manter o email do usuário logado em toda a aplicação.
 
 ---
 
-## 🖼 Telas implementadas
+## 4. Design e Estilo Visual
 
-- Tela de Login
-- Tela de Cadastro
-- Tela de Busca de Músicas
-- Tela de Playlists (criação e listagem)
-- Tela de Histórico (últimas ações)
-
----
-
-## ✍️ Sobre o Projeto
-
-Este projeto foi desenvolvido como prática acadêmica de um sistema completo em Java, utilizando padrão MVC, banco relacional e interface gráfica com Swing.
+- Paleta de cores preto e verde, inspirado no Spotify, garantindo uma experiência visual agradável e moderna.
+- Formulários, tabelas e botões com cores escuras de fundo e fontes claras, com destaques em verde para botões e bordas.
+- Botões com aparência plana e sem foco padrão para visual mais limpo.
+- Tabelas com dados centralizados e seleção destacada em verde.
 
 ---
 
-## 📌 Observações
+## 5. Estrutura do Código
 
-- Senhas ainda estão salvas como texto puro (pode-se aplicar `hash` com `MessageDigest`).
-- O sistema não possui múltiplas permissões (apenas usuário comum).
-- As playlists e histórico são vinculadas por email.
+- O projeto está organizado em pacotes principais:
+  - `view`: Telas e interfaces gráficas.
+  - `dao`: Classes de acesso a dados e manipulação do banco.
+  - `model`: Entidades e modelos de dados.
+  - `util`: Classes utilitárias, como controle de sessão.
+
+- Cada tela possui sua própria classe JFrame, facilitando manutenção e expansão futura.
+- DAOs encapsulam comandos SQL e lidam com conexões, promovendo separação de responsabilidades.
 
 ---
 
-## 📧 Contato
+## 6. Como Executar o Projeto
 
-Desenvolvido por Leonardo Guadagni
-RA: 22.125.081-4
-FEI - Ciência da Computação
+1. Configure um banco PostgreSQL com o esquema fornecido (script SQL disponível no repositório).
+2. Ajuste as configurações de conexão no arquivo `Conexao.java` para apontar para seu banco local.
+3. Compile e execute a aplicação a partir da classe principal (`TelaLogin`).
+4. Faça cadastro, login e comece a usar as funcionalidades.
+
+---
+
+## 7. Possíveis Melhorias Futuras
+
+- Implementar sistema de reprodução real de músicas (player).
+- Adicionar funcionalidades sociais, como compartilhamento de playlists.
+- Melhorar validação dos formulários e tratamento de exceções.
+- Adotar padrões de projeto mais robustos, como MVC completo.
+- Utilizar biblioteca gráfica moderna (JavaFX ou frameworks web).
+
+---
+
+## 8. Conclusão
+
+O Spotifei é um projeto que demonstra o domínio da linguagem Java, interfaces gráficas com Swing, e integração com banco de dados relacional. Além de fornecer funcionalidades úteis para gestão de músicas, playlists e histórico, o sistema possui um visual consistente e moderno, aproximando a experiência do usuário da de aplicativos comerciais como o Spotify.
+
+Este projeto serve como base para futuras evoluções e aprimoramentos, podendo ser expandido com funcionalidades mais avançadas conforme necessidade.
+
+---
+
+## Contato
+
+Para dúvidas ou sugestões, entre em contato pelo email: seu-email@exemplo.com
+
+---
+
+*Obrigado por acessar o Spotifei!*
