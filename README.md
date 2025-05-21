@@ -20,7 +20,7 @@ Sistema de gerenciamento de músicas com interface gráfica feita em Java Swing,
 
 ```
 Spotifei/
-├── controller/
+├── util/
 ├── dao/
 ├── model/
 ├── view/
